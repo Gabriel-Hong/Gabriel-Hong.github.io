@@ -107,5 +107,5 @@ C:\...\01_Study\03_WASM\emsdk\upstream\emscripten
 > 자세한 사항은 아래 사이트를 참고해주세요.
 
 Reference :
-https://emscripten.org/index.html
-https://developer.mozilla.org/en-US/docs/WebAssembly
+1. https://emscripten.org/index.html
+2. https://developer.mozilla.org/en-US/docs/WebAssembly
