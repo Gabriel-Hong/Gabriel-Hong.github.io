@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "[Wasm] WebAssembly 란 무엇인가?"
+title: WebAssembly 란 무엇인가?
 date: 2025-07-30 15:38:00 +0900
-categories: [Wasm]
+categories: [Study, Wasm]
 pin: true
 ---
 
