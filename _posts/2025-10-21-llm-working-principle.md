@@ -1,7 +1,7 @@
 ---
 layout: post
 title: LLM 동작 원리 알아보기
-date: 2025-10-21 09:00:00 +0900
+date: 2025-10-21 10:00:00 +0900
 categories: [AI, LLM]
 pin: true
 ---
