@@ -23,7 +23,9 @@ refactor: true
   {% endif %}
 
   {% for i in (visible_start..all_pinned.size) limit: pinned_size %}
-    {% assign posts = posts | push: all_pinned[i] %}
+    {% if all_pinned[i] %}
+      {% assign posts = posts | push: all_pinned[i] %}
+    {% endif %}
   {% endfor %}
 {% else %}
   {% assign pinned_size = 0 %}
