@@ -1,6 +1,6 @@
 ---
 layout: post
-title: [C++] Union (+실무 사례)
+title: "[C++] Union (+실무 사례)"
 date: 2025-10-22 10:00:00 +0900
 categories: [Dev, Cpp]
 pin: true
