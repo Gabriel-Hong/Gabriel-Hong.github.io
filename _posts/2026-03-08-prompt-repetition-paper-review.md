@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[논문 리뷰] Prompt Repetition Improves Non-Reasoning LLMs"
-date: 2026-03-08 19:00:00 +0900
+date: 2026-03-08 18:00:00 +0900
 categories: [AI, Paper]
 tags: [prompt-engineering, repetition, attention, inference]
 ---
