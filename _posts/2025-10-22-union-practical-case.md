@@ -3,7 +3,7 @@ layout: post
 title: "[C++] Union (+실무 사례)"
 date: 2025-10-22 10:00:00 +0900
 categories: [Dev, Cpp]
-pin: true
+pin: false
 ---
 
 ![](https://velog.velcdn.com/images/jeongmo511/post/c33ac0e1-db9f-421b-b1f7-84ba5cadd91d/image.png)

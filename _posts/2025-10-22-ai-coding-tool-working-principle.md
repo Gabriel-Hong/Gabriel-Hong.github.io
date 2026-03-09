@@ -4,6 +4,7 @@ title: AI Coding Tool 동작 원리 이해하기
 date: 2025-10-22 10:00:00 +0900
 categories: [AI, Tool]
 tags: [ai-coding, claude-code, cursor, copilot, opencode]
+pin: true
 ---
 
 *이 문서는 **OpenCode** 아키텍처 분석을 기반으로 작성되었으며, 모든 AI 코딩 도구에 공통적으로 적용되는 원리를 설명합니다.*

@@ -4,6 +4,7 @@ title: LLM 양자화 (Quantization) 가이드
 date: 2026-03-08 12:00:00 +0900
 categories: [AI, LLM]
 tags: [quantization, gptq, gguf, awq]
+pin: true
 ---
 
 ## 목차
