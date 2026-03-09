@@ -74,10 +74,10 @@ tags: [stanford-cme295, llm, moe, kv-cache, speculative-decoding, temperature, p
 
 ### 2. MoE의 구조
 
-$$\hat{y} = \sum\_{i=1}^{n} G(x)\_i \cdot E\_i(x)$$
+$$\hat{y} = \sum_{i=1}^{n} G(x)_i \cdot E_i(x)$$
 
 * $n$: Expert 수
-* $E\_i$: i번째 Expert (네트워크)
+* $E_i$: i번째 Expert (네트워크)
 * $G$: Gate/Router (어떤 Expert를 사용할지 결정)
 
 ### 3. Dense MoE vs Sparse MoE
@@ -114,7 +114,7 @@ $$\hat{y} = \sum_{i \in \text{TopK}} G(x)_i \cdot E_i(x)$$
 
 **Sparse MoE 공식:**
 
-$$\hat{y} = \sum\_{i \in \text{TopK}} G(x)\_i \cdot E\_i(x)$$
+$$\hat{y} = \sum_{i \in \text{TopK}} G(x)_i \cdot E_i(x)$$
 
 ### 4. Expert의 위치: FFN
 
@@ -122,8 +122,8 @@ $$\hat{y} = \sum\_{i \in \text{TopK}} G(x)\_i \cdot E\_i(x)$$
 
 | 레이어 | 파라미터 규모 | 이유 |
 | --- | --- | --- |
-| **FFN** | $O(d\_{model} \times d\_{ff} \times 2)$ | $d\_{ff}$가 매우 큼 (수천~만) |
-| **Attention** | $O(d\_{model} \times d\_k \times 4)$ | $d\_k$가 상대적으로 작음 (수백) |
+| **FFN** | $O(d_{model} \times d_{ff} \times 2)$ | $d_{ff}$가 매우 큼 (수천~만) |
+| **Attention** | $O(d_{model} \times d_k \times 4)$ | $d_k$가 상대적으로 작음 (수백) |
 
 ### 5. Routing Collapse 문제
 
@@ -131,10 +131,10 @@ $$\hat{y} = \sum\_{i \in \text{TopK}} G(x)\_i \cdot E\_i(x)$$
 
 **해결책: Load Balancing Loss**
 
-$$L\_{aux} = \alpha \cdot n \cdot \sum\_{i=1}^{n} f\_i \cdot P\_i$$
+$$L_{aux} = \alpha \cdot n \cdot \sum_{i=1}^{n} f_i \cdot P_i$$
 
-* $f\_i$: Expert i로 라우팅된 토큰 비율
-* $P\_i$: Expert i의 평균 라우팅 확률
+* $f_i$: Expert i로 라우팅된 토큰 비율
+* $P_i$: Expert i의 평균 라우팅 확률
 
 **MoE의 장점:**
 * 모델 **용량(capacity)** 증가 가능
@@ -169,7 +169,7 @@ K개의 가장 유망한 경로 유지
 
 **시퀀스 확률 계산:**
 
-$$\log P(\text{sequence}) = \sum\_{t} \log P(w\_t | w\_1, ..., w\_{t-1})$$
+$$\log P(\text{sequence}) = \sum_{t} \log P(w_t | w_1, ..., w_{t-1})$$
 
 **사용 사례:** 기계 번역처럼 정확성이 중요한 경우
 
@@ -185,7 +185,7 @@ $$\log P(\text{sequence}) = \sum\_{t} \log P(w\_t | w\_1, ..., w\_{t-1})$$
 
 ### 5. Temperature
 
-$$P(w\_i) = \frac{\exp(x\_i / T)}{\sum\_j \exp(x\_j / T)}$$
+$$P(w_i) = \frac{\exp(x_i / T)}{\sum_j \exp(x_j / T)}$$
 
 | Temperature | 분포 형태 | 출력 특성 |
 | --- | --- | --- |
@@ -197,7 +197,7 @@ $$P(w\_i) = \frac{\exp(x\_i / T)}{\sum\_j \exp(x\_j / T)}$$
 
 $T \to 0$ 일 때, $k$가 최대 logit의 인덱스라면:
 
-$$P(w\_k) = \frac{1}{1 + \sum\_{j \neq k} \exp((x\_j - x\_k)/T)} \to 1$$
+$$P(w_k) = \frac{1}{1 + \sum_{j \neq k} \exp((x_j - x_k)/T)} \to 1$$
 
 <details>
 <summary>logit이란?</summary>
@@ -480,7 +480,7 @@ Decoder Output → Head 1 (Main) → 다음 토큰 1
 
 ### Temperature
 
-$$P(w\_i) = \frac{\exp(x\_i / T)}{\sum\_j \exp(x\_j / T)}$$
+$$P(w_i) = \frac{\exp(x_i / T)}{\sum_j \exp(x_j / T)}$$
 
 ### 추론 최적화
 
