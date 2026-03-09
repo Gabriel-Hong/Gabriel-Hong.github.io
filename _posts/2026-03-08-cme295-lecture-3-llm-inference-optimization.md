@@ -4,6 +4,7 @@ title: "Stanford CME295: Lecture 3 - LLMs & 추론 최적화"
 date: 2026-03-08 10:30:00 +0900
 categories: [AI, Lecture]
 tags: [stanford-cme295, llm, moe, kv-cache, speculative-decoding, temperature, prompting, cot]
+math: true
 ---
 
 > **강의 출처**: Stanford CME295 - Transformers & LLMs (Autumn 2025)
