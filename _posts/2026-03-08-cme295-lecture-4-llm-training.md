@@ -229,8 +229,6 @@ Weight Update (Adam Optimizer):
 
 **아이디어:** 데이터를 여러 GPU에 분배
 
-![Data Parallelism](/assets/img/cme295-lecture-4/image-20260113-075120.png)
-
 ```
 ┌─────────┐ ┌─────────┐ ┌─────────┐
 │ GPU 0   │ │ GPU 1   │ │ GPU 2   │
@@ -298,8 +296,6 @@ GPU 2: Layer 7, 8, 9
 
 $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
 
-![Attention 연산 흐름](/assets/img/cme295-lecture-4/image-20260113-075134.png)
-
 **Vanilla 방식의 HBM 접근:**
 
 ```
@@ -322,12 +318,8 @@ $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)
 
 $$\text{softmax}([S_1, S_2, ..., S_n]) = [\alpha_1 \cdot \text{softmax}(S_1), ..., \alpha_n \cdot \text{softmax}(S_n)]$$
 
-![Softmax 분할](/assets/img/cme295-lecture-4/image-20260113-075148.png)
-
 - 각 블록의 softmax를 독립적으로 계산
 - Scaling factor $\alpha$로 조정
-
-![Flash Attention 동작 원리](/assets/img/cme295-lecture-4/image-20260113-075201.png)
 
 ```
 ┌───────────────────────────────────┐
@@ -890,8 +882,6 @@ Loss = CrossEntropy(Output 부분만)
 
 $$W = W_0 + \Delta W = W_0 + BA$$
 
-![LoRA 구조](/assets/img/cme295-lecture-4/image-20260113-075250.png)
-
 - $W_0$: Pre-trained 가중치 (Frozen)
 - $B \in \mathbb{R}^{d \times r}$: 학습 가능
 - $A \in \mathbb{R}^{r \times k}$: 학습 가능
@@ -1249,8 +1239,6 @@ A, B: BF16 (학습)
 
 $$W = W_0 + BA$$
 
-![LoRA 수식](/assets/img/cme295-lecture-4/image-20260113-075329.png)
-
 - Pre-trained 가중치 동결
 - Low-Rank 행렬만 학습
 - 파라미터 수백 배 절약
@@ -1288,8 +1276,6 @@ $$W = W_0 + BA, \quad B \in \mathbb{R}^{d \times r}, A \in \mathbb{R}^{r \times 
 **Flash Attention Softmax 분할:**
 
 $$\text{softmax}([S_1, ..., S_n]) = [\alpha_1 \cdot \text{softmax}(S_1), ..., \alpha_n \cdot \text{softmax}(S_n)]$$
-
-![핵심 공식 요약](/assets/img/cme295-lecture-4/image-20260113-075347.png)
 
 ---
 
