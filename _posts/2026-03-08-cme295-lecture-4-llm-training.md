@@ -103,8 +103,6 @@ Pre-trained Model (언어 이해) → Fine-tune for Task 1
 - 약 $10^{25}$ FLOPs
 - FLOPs ≈ O(토큰 수 × 파라미터 수)
 
-![FLOPs 비교](/assets/img/cme295-lecture-4/image-20260113-075105.png)
-
 ### 3. Scaling Laws (스케일링 법칙)
 
 **2020년 논문 발견:**
@@ -118,8 +116,6 @@ Pre-trained Model (언어 이해) → Fine-tune for Task 1
 고정된 연산량에서 최적의 성능을 위한 관계:
 
 $$\text{토큰 수} \approx 20 \times \text{파라미터 수}$$
-
-![Scaling Laws 그래프](/assets/img/cme295-lecture-4/image-20260113-075049.png)
 
 <details>
 <summary>Scaling Laws의 계수가 20배인 이유</summary>
