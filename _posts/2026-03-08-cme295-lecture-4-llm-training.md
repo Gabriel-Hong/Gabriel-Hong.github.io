@@ -117,8 +117,7 @@ Pre-trained Model (언어 이해) → Fine-tune for Task 1
 
 $$\text{토큰 수} \approx 20 \times \text{파라미터 수}$$
 
-<details>
-<summary>Scaling Laws의 계수가 20배인 이유</summary>
+**Scaling Laws의 계수가 20배인 이유**
 
 #### Chinchilla Optimal이란?
 
@@ -180,8 +179,6 @@ $\alpha$와 $\beta$가 비슷하다는 것은 모델 크기와 데이터 양이 
 | 20배는 이론적인가? | 아니오, 실험적 발견 |
 | 왜 20배인가? | Scaling law fitting 결과 |
 | 핵심 교훈 | 모델만 키우지 말고 데이터도 충분히 |
-
-</details>
 
 **예시:**
 
@@ -359,8 +356,7 @@ $$\text{softmax}([S_1, S_2, ..., S_n]) = [\alpha_1 \cdot \text{softmax}(S_1), ..
 
 **핵심:** HBM 접근 감소가 연산 증가보다 더 큰 이득
 
-<details>
-<summary>Recomputation(재계산) 상세</summary>
+**Recomputation(재계산) 상세**
 
 #### Recomputation(재계산) 상세 설명
 
@@ -489,8 +485,6 @@ Backward에서 S, P 필요하면? → SRAM에서 다시 계산!
 
 **핵심 인사이트: 현대 GPU에서는 연산보다 메모리 접근이 더 비싸다 (Memory-bound). Flash Attention은 이 특성을 활용한 것입니다.**
 
-</details>
-
 ---
 
 ## Part 5: Mixed Precision Training
@@ -504,8 +498,7 @@ Backward에서 S, P 필요하면? → SRAM에서 다시 계산!
 | **FP16** | 16 | 5 | 10 | 빠른 학습 |
 | **BF16** | 16 | 8 | 7 | 딥러닝 특화 |
 
-<details>
-<summary>Exponent, Mantissa 상세</summary>
+**Exponent, Mantissa 상세**
 
 **과학적 표기법과의 비교**
 
@@ -542,8 +535,6 @@ $$1.234 \times 10^5 = 123400$$
 | BF16 | 8비트 | 7비트 | FP32와 같은 범위 + 낮은 정밀도 |
 
 **BF16**은 Exponent를 FP32와 동일하게 유지해서 매우 크거나 작은 숫자도 표현 가능하고, Mantissa만 줄여서 메모리를 절약합니다. 딥러닝에서는 정밀도보다 범위가 더 중요하기 때문에 BF16이 딥러닝에 특화된 포맷으로 사용됩니다.
-
-</details>
 
 **GPU 성능 (H100 기준):**
 
@@ -582,8 +573,7 @@ $$1.234 \times 10^5 = 123400$$
 - 연산 속도 향상
 - 성능 저하 거의 없음
 
-<details>
-<summary>Mixed Precision Training 단계별 상세 (성능 저하 없이 작동하는 이유)</summary>
+**Mixed Precision Training 단계별 상세 (성능 저하 없이 작동하는 이유)**
 
 **전체 흐름**
 
@@ -751,8 +741,6 @@ Gradient: 0.00001 → FP16에서 0으로 반올림됨
 
 핵심 인사이트: 딥러닝은 본질적으로 근사적(approximate) 알고리즘이라서, 대부분의 연산은 낮은 정밀도로 충분합니다. 단, **누적되는 값(weights)**만 높은 정밀도가 필요합니다.
 
-</details>
-
 ---
 
 ## Part 6: Supervised Fine-Tuning (SFT)
@@ -898,8 +886,7 @@ LoRA: W₀ (frozen) + B × A
 - LoRA: $8 \times (4096 + 4096) = 65.5K$
 - **약 250배 절약!**
 
-<details>
-<summary>LoRA 개념 상세</summary>
+**LoRA 개념 상세**
 
 #### 1. 먼저 기본 개념: 신경망의 가중치 행렬
 
@@ -1121,8 +1108,6 @@ Fine-tuning의 변화(ΔW)도 이와 비슷하게 "단순"하다는 가정
 5. **결과:**
    - 파라미터: $d \times k$ → $r \times (d + k)$ (수백 배 절약)
    - 성능: Full Fine-tuning과 거의 동일!
-
-</details>
 
 ### 3. LoRA 적용 위치
 

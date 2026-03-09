@@ -210,8 +210,7 @@ $$P(y_i \succ y_j | x) = \frac{e^{R(x, y_i)}}{e^{R(x, y_i)} + e^{R(x, y_j)}} = \
 - $R_i - R_j$가 크면 → $\sigma$ 값이 1에 가까움 → $i$가 더 좋을 확률 높음
 - $R_i - R_j$가 작으면 → $\sigma$ 값이 0에 가까움 → $j$가 더 좋을 확률 높음
 
-<details>
-<summary>Bradley-Terry Formulation 상세</summary>
+**Bradley-Terry Formulation 상세**
 
 #### Bradley-Terry Formulation 설명
 
@@ -268,10 +267,8 @@ P(A > B) = σ(3.0 - 1.0) = σ(2) ≈ 0.88
 
 시그모이드는 점수 차이를 "확률"로 바꿔주는 역할을 합니다. 이렇게 하면 Reward Model을 학습할 때 MLE(최대우도추정)를 적용할 수 있게 됩니다.
 
-</details>
 
-<details>
-<summary>Sigmoid 함수 상세 및 사용하는 이유</summary>
+**Sigmoid 함수 상세 및 사용하는 이유**
 
 #### 시그모이드 함수의 의미와 사용 이유
 
@@ -361,7 +358,6 @@ Bradley-Terry도 같은 원리입니다. Reward 점수 차이 → 승률(선호 
 
 시그모이드는 "점수를 확률로 바꾸는 변환기"라고 생각하면 됩니다.
 
-</details>
 
 ### 2. Reward Model 손실 함수
 
@@ -380,8 +376,7 @@ Bradley-Terry도 같은 원리입니다. Reward 점수 차이 → 승률(선호 
 
 $$\mathcal{L}_{RM} = -\mathbb{E}_{(x, y_w, y_l) \sim D}\left[\log \sigma(R(x, y_w) - R(x, y_l))\right]$$
 
-<details>
-<summary>Reward Model 손실 함수 상세</summary>
+**Reward Model 손실 함수 상세**
 
 #### Reward Model 손실 함수 상세 설명
 
@@ -505,10 +500,8 @@ y_l: "세탁기에 넣으세요"    → R = 0.3  ← 점수 내려감!
 
 **한 문장 요약:** "좋은 응답이 나쁜 응답보다 높은 점수를 받을 확률"을 최대화하도록 학습합니다.
 
-</details>
 
-<details>
-<summary>최종 손실 함수 쉽게 이해하기</summary>
+**최종 손실 함수 쉽게 이해하기**
 
 #### 최종 손실 함수 완전 분해
 
@@ -634,7 +627,6 @@ E[...] = 모든 데이터 쌍에 대해 평균
 
 **손실이 낮아지면 → 좋은 응답이 높은 점수를 받을 확률이 올라갑니다.**
 
-</details>
 
 ### 3. Reward Model의 특징
 
@@ -711,8 +703,7 @@ $$D_{KL}(P \| Q) = \sum_i P_i \log \frac{P_i}{Q_i}$$
 - P = Q일 때만 = 0
 - 두 확률 분포의 "거리" 측정 (엄밀한 거리는 아님)
 
-<details>
-<summary>KL Divergence(Kullback-Leibler Divergence) 상세</summary>
+**KL Divergence(Kullback-Leibler Divergence) 상세**
 
 #### KL Divergence (Kullback-Leibler Divergence) 완전 정복
 
@@ -915,7 +906,6 @@ D_KL = 0: P와 Q가 완전히 같음
 
 **한 문장: KL Divergence는 "새 모델이 원래 모델에서 얼마나 달라졌는지"를 측정해서, 너무 이상해지지 않도록 제동을 거는 역할을 합니다.**
 
-</details>
 
 ### 5. Advantage 함수
 
@@ -953,8 +943,7 @@ $$A(s, a) = Q(s, a) - V(s)$$
 
 **학습:** Policy와 함께 Joint Training
 
-<details>
-<summary>Value Function 상세</summary>
+**Value Function 상세**
 
 #### Value Function 완전 정복
 
@@ -1184,7 +1173,6 @@ Advantage = 0.5 - 2.0 = -1.5
 2. 좋은 토큰은 강화, 나쁜 토큰은 약화
 3. 효율적인 Policy 학습 가능
 
-</details>
 
 ---
 
@@ -1214,8 +1202,7 @@ A < 0 (나쁜 행동일 때):
   → r을 낮추고 싶지만 1-ε까지만!
 ```
 
-<details>
-<summary>PPO-Clip 상세</summary>
+**PPO-Clip 상세**
 
 #### PPO-Clip 완전 정복
 
@@ -1522,7 +1509,6 @@ def ppo_clip_loss(old_probs, new_probs, advantages, epsilon=0.2):
 
 > PPO-Clip은 "확률 변화를 20% 이내로 제한해서" 모델이 한 번에 너무 급격하게 바뀌는 것을 막는 안전장치입니다.
 
-</details>
 
 ### 2. PPO-KL Penalty
 
@@ -1710,8 +1696,7 @@ $$\mathcal{L}_{DPO} = -\mathbb{E}_{(x, y_w, y_l)}\left[\log \sigma\left(\beta \l
 - Preference Data를 SFT로 먼저 학습
 - 직접 모델로 Preference Data 생성 후 평가
 
-<details>
-<summary>DPO (Direct Preference Optimization) 상세</summary>
+**DPO (Direct Preference Optimization) 상세**
 
 #### DPO (Direct Preference Optimization) 완전 정복
 
@@ -2138,7 +2123,6 @@ $$\mathcal{L}_{DPO} = -\log \sigma\left(\beta \cdot (\ldots)\right)$$
 
 > DPO는 "Reward Model을 Policy 안에 숨겨서" Preference 데이터만으로 직접 모델을 정렬하는 우아한 방법입니다.
 
-</details>
 
 ---
 

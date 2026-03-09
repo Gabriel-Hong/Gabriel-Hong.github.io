@@ -230,8 +230,7 @@ d_k = 64  # key dimension
 score = (Q @ K.T) / math.sqrt(d_k)  # 분산을 1로 정규화
 ```
 
-<details>
-<summary>스케일링이 필요한 이유 상세 (수식 포함)</summary>
+**스케일링이 필요한 이유 상세 (수식 포함)**
 
 $q$와 $k$의 각 성분이 독립적이고 평균 0, 분산 1인 확률변수라고 가정하면:
 
@@ -253,10 +252,7 @@ $$\text{Var}\left(\frac{q \cdot k}{\sqrt{d_k}}\right) = \frac{d_k}{d_k} = 1$$
 
 $\sqrt{d_k}$로 나누면 분산이 1로 정규화되어 안정적인 softmax 분포를 얻습니다.
 
-</details>
-
-<details>
-<summary>분산의 기본 성질</summary>
+**분산의 기본 성질**
 
 **독립 확률변수의 분산 성질:**
 
@@ -271,8 +267,6 @@ $X, Y$가 평균 0, 분산 1이면:
 $$\text{Var}(XY) = E[X^2] \cdot E[Y^2] = 1 \cdot 1 = 1$$
 
 이를 $d_k$개 합산하면: $\text{Var}\left(\sum_{i=1}^{d_k} q_i k_i\right) = d_k$
-
-</details>
 
 ---
 
@@ -378,8 +372,7 @@ $$\text{where } \text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$$
 출력 = LayerNorm(x + Sublayer(x))
 ```
 
-<details>
-<summary>Encoder 단계별 동작 상세</summary>
+**Encoder 단계별 동작 상세**
 
 **Step 1: Input Embedding + Position Encoding**
 
@@ -412,8 +405,6 @@ $$\text{FFN}(x) = \max(0, xW_1 + b_1)W_2 + b_2$$
 $$\text{Out}_2 = \text{LayerNorm}(\text{Out}_1 + \text{FFN}(\text{Out}_1))$$
 
 이 과정이 $N$번 반복되어 점점 더 풍부한 표현을 생성합니다.
-
-</details>
 
 ### 7.3 Decoder 구조
 
@@ -466,8 +457,7 @@ $$\text{FFN}(x) = \max(0, xW_1 + b_1)W_2 + b_2 = \text{ReLU}(xW_1 + b_1)W_2 + b_
 * 비선형성 제공
 * "채널 믹싱" 역할
 
-<details>
-<summary>FFN 적용 이유 상세</summary>
+**FFN 적용 이유 상세**
 
 **왜 Self-Attention 후에 FFN이 필요한가?**
 
@@ -493,8 +483,6 @@ $$x \in \mathbb{R}^{d_{model}} \xrightarrow{W_1} h \in \mathbb{R}^{d_{ff}} \xrig
 **Position-wise 적용:** FFN은 각 토큰 위치에 **동일한 가중치**로 **독립적**으로 적용됩니다. 즉, 토큰 간 상호작용은 Attention에서만 일어납니다.
 
 **비유:** Self-Attention이 "회의에서 정보 수집"이라면, FFN은 "수집한 정보를 개인적으로 정리하고 소화하는 단계"입니다.
-
-</details>
 
 ---
 
@@ -575,8 +563,7 @@ Pre-Norm (현대 LLM):
 * 더 깊은 네트워크 학습 가능
 * 대부분의 현대 LLM에서 사용 (GPT-2+, LLaMA 등)
 
-<details>
-<summary>Residual Connection 적용 이유 상세</summary>
+**Residual Connection 적용 이유 상세**
 
 **문제: 깊은 네트워크의 학습 어려움**
 
@@ -596,10 +583,7 @@ $$\frac{\partial y}{\partial x} = \frac{\partial F(x)}{\partial x} + 1$$
 
 Sub-layer가 학습해야 할 것은 $F(x) = y - x$ (잔차, residual)입니다. "원래 입력에서 얼마나 변해야 하는가?"만 학습하면 되므로 최적화가 쉬워집니다.
 
-</details>
-
-<details>
-<summary>LayerNorm 적용 이유 상세</summary>
+**LayerNorm 적용 이유 상세**
 
 **왜 Normalization이 필요한가?**
 
@@ -625,8 +609,6 @@ $$\text{LayerNorm}(x) = \gamma \odot \frac{x - \mu}{\sigma + \epsilon} + \beta$$
 $\gamma, \beta$는 학습 가능한 파라미터로, 정규화 후 표현력을 복원합니다.
 
 **Transformer에서 Layer Norm을 쓰는 이유:** NLP에서는 배치 내 시퀀스 길이가 다르고, 같은 위치의 feature가 배치 간 의미가 다를 수 있어 Batch Norm이 적합하지 않습니다.
-
-</details>
 
 ---
 
@@ -873,20 +855,16 @@ print(f"Attention weights shape: {weights.shape}") # [2, 8, 10, 10]
 
 ### Q1. Self-Attention의 계산 복잡도가 O(n²)인 이유는?
 
-<details>
-<summary>정답 보기</summary>
+**정답 보기**
 
 모든 토큰 쌍에 대해 attention score를 계산해야 하기 때문입니다.
 
 * n개의 Query × n개의 Key = n² 개의 점수
 * 따라서 시간 및 메모리 복잡도가 $O(n^2 \cdot d)$
 
-</details>
-
 ### Q2. $\sqrt{d_k}$로 스케일링하는 이유는?
 
-<details>
-<summary>정답 보기</summary>
+**정답 보기**
 
 내적 값의 분산이 $d_k$에 비례하여 커지기 때문입니다.
 
@@ -894,12 +872,9 @@ print(f"Attention weights shape: {weights.shape}") # [2, 8, 10, 10]
 * 큰 값이 softmax를 통과하면 gradient가 매우 작아짐
 * $\sqrt{d_k}$로 나누어 분산을 1로 정규화하여 안정적인 학습 유도
 
-</details>
-
 ### Q3. Encoder-only vs Decoder-only의 핵심 차이는?
 
-<details>
-<summary>정답 보기</summary>
+**정답 보기**
 
 **Attention 방향**이 다릅니다:
 
@@ -910,8 +885,6 @@ print(f"Attention weights shape: {weights.shape}") # [2, 8, 10, 10]
 
 * Encoder-only: 분류, 표현 학습
 * Decoder-only: 텍스트 생성 (auto-regressive)
-
-</details>
 
 ---
 

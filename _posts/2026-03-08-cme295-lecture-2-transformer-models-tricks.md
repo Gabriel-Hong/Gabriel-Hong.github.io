@@ -270,8 +270,7 @@ $$\text{RMSNorm}(x) = \frac{x}{\sqrt{\frac{1}{n}\sum_{i=1}^{n}x_i^2 + \epsilon}}
 | **[MASK]** | MLM 태스크에서 masking된 위치 표시 |
 | **[PAD]** | 배치 처리를 위한 패딩 |
 
-<details>
-<summary>PAD Token 상세</summary>
+**PAD Token 상세**
 
 **왜 PAD 토큰이 필요한가?**
 
@@ -292,8 +291,6 @@ $$\text{score}_{i,\text{PAD}} = -\infty \quad \Rightarrow \quad \text{softmax}(\
 
 - Loss 계산 시에도 PAD 위치는 제외
 
-</details>
-
 #### 6.3 BERT의 입력 표현
 
 **세 가지 임베딩의 합:**
@@ -302,8 +299,7 @@ $$\text{Input} = \text{Token Embedding} + \text{Position Embedding} + \text{Segm
 
 **Token Embedding:** WordPiece tokenizer 사용 (vocab size ~30K)
 
-<details>
-<summary>Token Embedding 학습 과정</summary>
+**Token Embedding 학습 과정**
 
 **Token Embedding이란?**
 
@@ -328,12 +324,9 @@ $$E \in \mathbb{R}^{V \times d_{model}}$$
 - `##` 접두사는 단어의 중간/끝 서브워드를 의미
 - 이를 통해 어휘 크기를 ~30K로 유지하면서 OOV 문제 해결
 
-</details>
-
 **Segment Embedding:** 문장 A vs 문장 B 구분, NSP 태스크를 위해 도입
 
-<details>
-<summary>Segment Embedding 상세</summary>
+**Segment Embedding 상세**
 
 **Segment Embedding이란?**
 
@@ -360,8 +353,6 @@ $$\text{Segment Embedding} \in \mathbb{R}^{2 \times d_{model}}$$
 - NLI (Natural Language Inference): 전제(A)와 가설(B) 구분
 
 **단일 문장 태스크에서는?** 모든 토큰에 $E_A$만 사용합니다.
-
-</details>
 
 #### 6.4 BERT Pre-training
 
@@ -399,8 +390,7 @@ $$\text{Segment Embedding} \in \mathbb{R}^{2 \times d_{model}}$$
 | 질의응답 | 토큰 임베딩 | 답변 시작/끝 위치 예측 |
 | 문장 쌍 분류 | [CLS] 임베딩 | NLI, 유사도 |
 
-<details>
-<summary>CLS 토큰 활용 상세</summary>
+**CLS 토큰 활용 상세**
 
 **[CLS] 토큰이란?**
 
@@ -430,8 +420,6 @@ $$P(\text{end} = i) = \text{softmax}(W_e \cdot h_i)$$
 
 답변의 시작/끝 위치를 각각 예측합니다.
 
-</details>
-
 #### 6.6 BERT 모델 크기
 
 | 모델 | Layers | Hidden | Heads | 파라미터 |
@@ -456,8 +444,7 @@ $$P(\text{end} = i) = \text{softmax}(W_e \cdot h_i)$$
 
 $$\mathcal{L} = D_{KL}(P_{teacher} \| P_{student}) = \sum_x P_{teacher}(x) \log \frac{P_{teacher}(x)}{P_{student}(x)}$$
 
-<details>
-<summary>KL Divergence 손실 함수 상세</summary>
+**KL Divergence 손실 함수 상세**
 
 **KL Divergence란?**
 
@@ -488,8 +475,6 @@ $T > 1$로 설정하면 확률 분포가 더 "부드러워져" Teacher의 지식
 $$\mathcal{L} = \alpha \cdot \mathcal{L}_{CE}(\text{hard labels}) + (1-\alpha) \cdot T^2 \cdot D_{KL}(P_{teacher} \| P_{student})$$
 
 $T^2$를 곱하는 이유: temperature scaling으로 인한 gradient 크기 보정
-
-</details>
 
 **DistilBERT 결과:**
 * Layer 수를 절반으로 줄임 (12 → 6)

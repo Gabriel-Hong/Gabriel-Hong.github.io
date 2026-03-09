@@ -88,8 +88,7 @@ $$\hat{y} = \sum_{i=1}^{n} G(x)_i \cdot E_i(x)$$
 | **Dense MoE** | 모든 Expert 사용 | 가중치로 중요도 조절 (0~1) |
 | **Sparse MoE** | Top-K Expert만 사용 | K=1 또는 K=2가 일반적 |
 
-<details>
-<summary>Dense MoE vs Sparse MoE 개념</summary>
+**Dense MoE vs Sparse MoE 개념**
 
 **Dense MoE**
 
@@ -110,8 +109,6 @@ $$\hat{y} = \sum_{i \in \text{TopK}} G(x)_i \cdot E_i(x)$$
 | 활성화 | 모든 Expert | Top-K Expert만 |
 | 연산량(FLOPs) | 높음 | 낮음 |
 | 효율성 | 낮음 | 높음 |
-
-</details>
 
 **Sparse MoE 공식:**
 
@@ -200,8 +197,7 @@ $T \to 0$ 일 때, $k$가 최대 logit의 인덱스라면:
 
 $$P(w_k) = \frac{1}{1 + \sum_{j \neq k} \exp((x_j - x_k)/T)} \to 1$$
 
-<details>
-<summary>logit이란?</summary>
+**logit이란?**
 
 **Logit이란?**
 
@@ -243,10 +239,7 @@ $$P(w_i) = \frac{\exp(x_i / T)}{\sum_j \exp(x_j / T)}$$
 
 여기서 $x_i$가 logit입니다.
 
-</details>
-
-<details>
-<summary>Temperature 증명 상세</summary>
+**Temperature 증명 상세**
 
 #### Temperature 수학적 증명 설명
 
@@ -314,8 +307,6 @@ $$P(w_k) = \frac{1}{1 + 0} = 1$$
 **직관적 해석**
 
 Temperature가 0에 가까워지면, softmax가 "winner-take-all" 방식이 됩니다. 가장 높은 logit을 가진 토큰이 확률 1을 독차지하고, 나머지는 모두 0이 됩니다. 그래서 **결정론적(deterministic)**이라고 하는 것입니다.
-
-</details>
 
 ### 6. Guided Decoding (구조화된 출력)
 
