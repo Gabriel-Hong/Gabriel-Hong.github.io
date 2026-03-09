@@ -70,8 +70,6 @@ math: true
 
 **3단계 프로세스:**
 
-![RAG 3단계](/assets/img/cme295-lecture-7/image-20260116-020904.png)
-
 ```
 ┌──────────┐    ┌──────────┐    ┌──────────┐
 │ RETRIEVE │ → │ AUGMENT  │ → │ GENERATE │
@@ -129,8 +127,6 @@ Response: "A 후보가 당선되었습니다."
 
 RAG의 핵심은 **좋은 검색**입니다.
 
-![2단계 검색](/assets/img/cme295-lecture-7/image-20260116-020927.png)
-
 ```
 ┌─────────────────────────────────────────────────────┐
 │ Stage 1: Candidate Retrieval                        │
@@ -160,8 +156,6 @@ Chunk → [Encoder] → Chunk Embedding ─┘
 **Cosine Similarity:**
 
 $$\text{cos}(\theta) = \frac{Q \cdot C}{\|Q\| \cdot \|C\|}$$
-
-![Cosine Similarity](/assets/img/cme295-lecture-7/image-20260116-020942.png)
 
 **Semantic Search vs Keyword Search:**
 
@@ -235,8 +229,6 @@ $$DCG@K = \sum_{i=1}^{K} \frac{rel_i}{\log_2(i+1)}$$
 
 $$NDCG@K = \frac{DCG@K}{IDCG@K}$$
 
-![NDCG](/assets/img/cme295-lecture-7/image-20260116-021014.png)
-
 - $rel_i$: i번째 위치 문서의 실제 관련성 (0 또는 1)
 - $IDCG$: 이상적인 DCG (최선의 배치)
 - **값 범위:** 0 ~ 1 (1이 최적)
@@ -247,33 +239,254 @@ $$NDCG@K = \frac{DCG@K}{IDCG@K}$$
 - Cumulative: 모든 관련 문서 고려
 - Normalized: 0~1 스케일로 정규화
 
-<details>
-<summary>NDCG (Normalized Discounted Cumulative Gain) 상세 설명</summary>
+**NDCG (Normalized Discounted Cumulative Gain) 상세 설명**
 
-![NDCG 상세 1](/assets/img/cme295-lecture-7/image-20260122-095654.png)
+##### 1. NDCG란?
 
-![NDCG 상세 2](/assets/img/cme295-lecture-7/image-20260122-095726.png)
+NDCG는 검색/추천 시스템의 랭킹 품질을 평가하는 지표입니다.
 
-![NDCG 상세 3](/assets/img/cme295-lecture-7/image-20260122-095753.png)
+주로 사용되는 곳:
 
-![NDCG 상세 4](/assets/img/cme295-lecture-7/image-20260122-095807.png)
+- **RAG의 Retrieval 성능 평가**
+- 검색 엔진 결과 품질 측정
+- 추천 시스템 평가
 
-![NDCG 상세 5](/assets/img/cme295-lecture-7/image-20260122-095819.png)
+##### 2. 단계별 이해
 
-</details>
+NDCG를 이해하려면 **CG → DCG → NDCG** 순서로 이해해야 합니다.
+
+**2.1 CG (Cumulative Gain)**
+
+정의: 검색 결과의 관련성 점수를 단순 합산
+
+$$CG_k = \sum_{i=1}^{k} rel_i$$
+
+- $rel_i$: i번째 문서의 관련성 점수 (예: 0, 1, 2, 3)
+- $k$: 상위 k개 결과
+
+**예시**
+
+```
+검색어: "Transformer 논문"
+
+검색 결과 (순서대로):
+
+| 순위 | 문서                    | 관련성(rel) |
+|------|------------------------|-----------|
+|  1   | "RNN 튜토리얼"          |     0     |
+|  2   | "Attention is All..."  |     3     | ← 정답!
+|  3   | "BERT 논문"            |     2     |
+|  4   | "CNN 기초"              |     0     |
+|  5   | "GPT 논문"              |     2     |
+
+CG@5 = 0 + 3 + 2 + 0 + 2 = 7
+```
+
+**CG의 문제점**
+
+**순서를 고려하지 않음!**
+
+```
+결과 A: [3, 2, 2, 0, 0] → CG = 7
+결과 B: [0, 0, 2, 2, 3] → CG = 7  (같음!)
+
+하지만 결과 A가 훨씬 좋음! (관련 문서가 앞에 있음)
+```
+
+**2.2 DCG (Discounted Cumulative Gain)**
+
+핵심 아이디어: 뒤에 있는 결과일수록 가치를 할인(Discount)
+
+$$DCG_k = \sum_{i=1}^{k} \frac{rel_i}{\log_2(i+1)}$$
+
+또는 (더 일반적인 버전):
+
+$$DCG_k = \sum_{i=1}^{k} \frac{2^{rel_i} - 1}{\log_2(i+1)}$$
+
+**할인 계수 (Discount Factor)**
+
+| 순위 (i) | $\log_2(i+1)$ | 할인 계수 $\frac{1}{\log_2(i+1)}$ |
+| --- | --- | --- |
+| 1 | 1.0 | **1.00** |
+| 2 | 1.58 | **0.63** |
+| 3 | 2.0 | **0.50** |
+| 4 | 2.32 | **0.43** |
+| 5 | 2.58 | **0.39** |
+
+→ 순위가 낮을수록 할인이 커짐 (가치 감소)
+
+**예시**
+
+```
+DCG 계산 예시
+
+결과 A: [3, 2, 2, 0, 0]
+
+DCG = 3/log₂(2) + 2/log₂(3) + 2/log₂(4) + 0/log₂(5) + 0/log₂(6)
+    = 3/1.0 + 2/1.58 + 2/2.0 + 0 + 0
+    = 3.0 + 1.26 + 1.0 + 0 + 0
+    = 5.26
+
+──────────────────────────────────
+
+결과 B: [0, 0, 2, 2, 3]
+
+DCG = 0/log₂(2) + 0/log₂(3) + 2/log₂(4) + 2/log₂(5) + 3/log₂(6)
+    = 0 + 0 + 1.0 + 0.86 + 1.16
+    = 3.02
+
+──────────────────────────────────
+
+결과: A(5.26) > B(3.02)  ✅ 올바른 평가!
+```
+
+**DCG의 문제점**
+
+**쿼리마다 스케일이 다름**
+
+```
+쿼리 1: 관련 문서 10개 → DCG 최대값 큼
+쿼리 2: 관련 문서 2개  → DCG 최대값 작음
+
+→ 서로 다른 쿼리의 DCG를 직접 비교할 수 없음
+```
+
+**2.3 NDCG (Normalized DCG)**
+
+핵심 아이디어: DCG를 **이상적인 DCG (IDCG)**로 나누어 정규화
+
+$$NDCG_k = \frac{DCG_k}{IDCG_k}$$
+
+- **IDCG (Ideal DCG):** 완벽한 순서일 때의 DCG (관련성 높은 순으로 정렬)
+- **NDCG 범위:** 0~1 (1이 완벽)
+
+**예시**
+
+```
+NDCG 계산 예시
+
+실제 결과: [0, 3, 2, 0, 2]  (관련성 점수)
+이상적 순서: [3, 2, 2, 0, 0]  (높은 순으로 정렬)
+
+──────────────────────────────────
+
+DCG 계산 (실제):
+DCG = 0/1.0 + 3/1.58 + 2/2.0 + 0/2.32 + 2/2.58
+    = 0 + 1.90 + 1.0 + 0 + 0.78
+    = 3.68
+
+IDCG 계산 (이상적):
+IDCG = 3/1.0 + 2/1.58 + 2/2.0 + 0/2.32 + 0/2.58
+     = 3.0 + 1.26 + 1.0 + 0 + 0
+     = 5.26
+
+NDCG = DCG / IDCG = 3.68 / 5.26 = 0.70
+
+해석: 이상적인 랭킹의 70% 수준
+```
+
+##### 3. NDCG 전체 공식 요약
+
+$$NDCG@k = \frac{DCG@k}{IDCG@k}$$
+
+$$DCG@k = \sum_{i=1}^{k} \frac{rel_i}{\log_2(i+1)}$$
+
+$$IDCG@k = \sum_{i=1}^{k} \frac{rel_i^{ideal}}{\log_2(i+1)}$$
+
+여기서 $rel_i^{ideal}$은 관련성을 내림차순 정렬한 값
+
+##### 4. Python 구현
+
+```python
+import numpy as np
+
+def dcg_at_k(relevances, k):
+    """DCG@k 계산"""
+    relevances = np.array(relevances)[:k]
+    positions = np.arange(1, len(relevances) + 1)
+    discounts = np.log2(positions + 1)
+    return np.sum(relevances / discounts)
+
+def ndcg_at_k(relevances, k):
+    """NDCG@k 계산"""
+    # 실제 DCG
+    dcg = dcg_at_k(relevances, k)
+
+    # 이상적 DCG (내림차순 정렬)
+    ideal_relevances = sorted(relevances, reverse=True)
+    idcg = dcg_at_k(ideal_relevances, k)
+
+    # NDCG
+    if idcg == 0:
+        return 0.0
+    return dcg / idcg
+
+# 예시
+relevances = [0, 3, 2, 0, 2]  # 실제 검색 결과의 관련성
+
+print(f"DCG@5: {dcg_at_k(relevances, 5):.2f}")       # 3.68
+print(f"IDCG@5: {dcg_at_k(sorted(relevances, reverse=True), 5):.2f}")  # 5.26
+print(f"NDCG@5: {ndcg_at_k(relevances, 5):.2f}")      # 0.70
+```
+
+##### 5. RAG에서의 NDCG 활용
+
+```
+RAG Retrieval 평가
+
+Query: "Transformer의 Self-Attention이란?"
+
+Retrieved Documents (Top 5):
+
+| 순위 | 문서                        | 관련성 |
+|------|----------------------------|--------|
+|  1   | "CNN 아키텍처 설명"          |   0    |
+|  2   | "Attention Is All You Need"|   3    | ← 최고!
+|  3   | "BERT의 Self-Attention"    |   2    |
+|  4   | "RNN의 한계"               |   1    |
+|  5   | "Transformer 구조"         |   2    |
+
+NDCG@5 = 0.75
+
+문제점: 가장 관련 있는 문서(rel=3)가 2번째에 있음
+개선 방향: Retriever/Reranker 성능 향상 필요
+```
+
+##### 6. 다른 Retrieval 메트릭과 비교
+
+| 메트릭 | 특징 | 관련성 레벨 |
+| --- | --- | --- |
+| **Precision@k** | 상위 k개 중 관련 문서 비율 | Binary (0/1) |
+| **Recall@k** | 전체 관련 문서 중 검색된 비율 | Binary (0/1) |
+| **MRR** | 첫 번째 관련 문서의 순위 역수 | Binary (0/1) |
+| **NDCG@k** | 순위와 관련성 정도 모두 고려 | Graded (0,1,2,3...) ✅ |
+
+**NDCG의 장점:**
+
+- 순위 고려 (앞에 있을수록 가치 높음)
+- 다단계 관련성 지원 (0/1뿐만 아니라 0,1,2,3 등)
+- 0~1 정규화로 쿼리 간 비교 가능
+
+##### 7. 핵심 정리
+
+| 개념 | 설명 |
+| --- | --- |
+| **CG** | 관련성 점수 단순 합산 (순서 무시) |
+| **DCG** | 순위에 따라 할인 적용 (뒤로 갈수록 가치 감소) |
+| **IDCG** | 이상적인 순서일 때의 DCG |
+| **NDCG** | DCG/IDCG (0~1 정규화) |
+| **핵심** | "좋은 문서가 앞에 있을수록 높은 점수" |
+
+$$NDCG@k = \frac{\sum_{i=1}^{k} \frac{rel_i}{\log_2(i+1)}}{\sum_{i=1}^{k} \frac{rel_i^{sorted}}{\log_2(i+1)}}$$
 
 #### 5.2 MRR (Mean Reciprocal Rank)
 
 $$MRR = \frac{1}{rank_{\text{first relevant}}}$$
 
-![MRR](/assets/img/cme295-lecture-7/image-20260116-021035.png)
-
 - 첫 번째 관련 문서의 순위만 고려
 - 단순하지만 효과적
 
 #### 5.3 Precision@K & Recall@K
-
-![Precision & Recall](/assets/img/cme295-lecture-7/image-20260116-021052.png)
 
 | 메트릭 | 공식 | 의미 |
 | --- | --- | --- |
@@ -302,12 +515,71 @@ $$MRR = \frac{1}{rank_{\text{first relevant}}}$$
 | RAG | 비정형 (문서, 텍스트) | 정보 검색 |
 | Tool Calling | 정형 (함수, API) | 계산, 액션 실행 |
 
-<details>
-<summary>Tool Selection/Calling 매커니즘 상세</summary>
+**Tool Selection/Calling 매커니즘 상세**
 
-![Tool Calling 상세](/assets/img/cme295-lecture-7/image-20260122-102725.png)
+##### 1. LLM이 받는 정보
 
-</details>
+Tool selection은 **name**과 **summary**만으로 이루어지는 게 아니라, 더 풍부한 정보를 기반으로 합니다:
+
+```
+Tool Definition (System Prompt에 포함)
+
+• name: "web_search"
+• description: "Search the web for..."
+• parameters: {
+      "query": {type: string, required}
+  }
+• (선택적) examples, when to use/not use
+```
+
+##### 2. Selection 과정 (LLM 내부)
+
+```
+User Query → LLM이 의도 파악 → Tool Descriptions 매칭 → Tool 선택 & Parameters 추출
+```
+
+핵심: LLM은 자연어 이해를 통해 선택합니다. 별도의 classifier나 retrieval 시스템이 아니라, LLM 자체가 다음을 수행해요:
+
+1. **사용자 의도 파악:** "오늘 날씨 어때?" → 현재 정보 필요
+2. **Tool과 매칭:** description을 읽고 `web_search`가 적합하다고 판단
+3. **Parameter 추출:** query = "오늘 날씨"
+
+##### 3. 실제 호출 방식
+
+LLM은 특정 포맷으로 tool call을 출력합니다.
+
+##### 4. Selection의 핵심 포인트
+
+**LLM은 단순 키워드 매칭이 아닌 의미론적 이해로 선택합니다:**
+
+| 요소 | 역할 |
+| --- | --- |
+| **name** | 빠른 식별용 (web_search, bash_tool...) |
+| **description** | 언제/왜 사용하는지 설명 |
+| **parameters schema** | 어떤 입력이 필요한지 |
+| **예시/가이드라인** | 더 정교한 판단 지원 |
+
+##### 5. 실제 Selection 프로세스 (내부적으로)
+
+```
+1. 사용자 쿼리 이해
+   "오늘 날씨 어때?"
+   → 현재 정보 필요 + 날씨 도메인
+
+2. 각 Tool Description과 매칭
+   - bash_tool: "Run bash command" → ❌ 관계없음
+   - web_search: "Search the web" → ✅ 현재 정보 가능
+   - create_file: "Create new file" → ❌ 관계없음
+
+3. Parameter 생성
+   query = "오늘 서울 날씨" (사용자 위치 + 의도 추론)
+
+4. 호출 형식으로 출력
+```
+
+**요약**
+
+Tool Selection은 LLM의 자연어 이해 능력을 그대로 활용합니다. name/summary만이 아니라 전체 tool definition(description, parameters, examples)을 context로 받고, LLM이 사용자 의도와 가장 잘 매칭되는 tool을 선택해서 정해진 포맷으로 호출을 출력합니다.
 
 ---
 
@@ -334,8 +606,6 @@ def find_teddy_bear(latitude: float, longitude: float) -> TeddyBearResult:
 **중요:** LLM은 함수의 **시그니처와 문서화**만 볼 수 있음 (구현 X)
 
 #### 7.2 Tool Calling 3단계 프로세스
-
-![Tool Calling 프로세스](/assets/img/cme295-lecture-7/image-20260116-021114.png)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -399,8 +669,6 @@ def find_teddy_bear(latitude: float, longitude: float) -> TeddyBearResult:
 **문제:** 너무 많은 Tool이 Context에 있으면 성능 저하
 
 **해결책:** 2단계 선택 프로세스
-
-![Tool Selection](/assets/img/cme295-lecture-7/image-20260116-021139.png)
 
 ```
 ┌────────────────────────────────────────────────────┐
@@ -586,8 +854,6 @@ User Query → [Router Agent]
 ## 핵심 요약
 
 ### LLM 확장 방법 비교
-
-![LLM 확장 방법 비교](/assets/img/cme295-lecture-7/image-20260116-021221.png)
 
 ```
 ┌────────────┬─────────────┬────────────┬─────────────┐
