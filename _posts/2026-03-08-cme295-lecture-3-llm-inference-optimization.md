@@ -37,8 +37,6 @@ tags: [stanford-cme295, llm, moe, kv-cache, speculative-decoding, temperature, p
 
 ### 2. LLM의 기본 구조
 
-![LLM 기본 구조](/assets/img/cme295-lecture-3/image-20260113-073727.png)
-
 ```
 ┌─────────────────────────────┐
 │       Decoder Only          │
@@ -78,8 +76,6 @@ tags: [stanford-cme295, llm, moe, kv-cache, speculative-decoding, temperature, p
 
 $$\hat{y} = \sum\_{i=1}^{n} G(x)\_i \cdot E\_i(x)$$
 
-![MoE 구조](/assets/img/cme295-lecture-3/image-20260113-073822.png)
-
 * $n$: Expert 수
 * $E\_i$: i번째 Expert (네트워크)
 * $G$: Gate/Router (어떤 Expert를 사용할지 결정)
@@ -94,15 +90,31 @@ $$\hat{y} = \sum\_{i=1}^{n} G(x)\_i \cdot E\_i(x)$$
 <details>
 <summary>Dense MoE vs Sparse MoE 개념</summary>
 
-![Dense vs Sparse MoE](/assets/img/cme295-lecture-3/image-20260114-002614.png)
+**Dense MoE**
+
+모든 Expert를 사용하되, 가중치(0~1)로 중요도를 조절합니다. 즉, 모든 전문가의 의견을 다 듣되, 각 전문가에게 서로 다른 비중을 두어 종합하는 방식입니다.
+
+$$\hat{y} = \sum_{i=1}^{n} G(x)_i \cdot E_i(x)$$
+
+**Sparse MoE**
+
+Top-K개의 Expert만 선택해서 사용합니다. 일반적으로 K=1 또는 K=2를 사용합니다. 가장 적합한 전문가 1~2명에게만 물어보는 방식이죠.
+
+$$\hat{y} = \sum_{i \in \text{TopK}} G(x)_i \cdot E_i(x)$$
+
+**핵심 차이점:**
+
+| 구분 | Dense MoE | Sparse MoE |
+| --- | --- | --- |
+| 활성화 | 모든 Expert | Top-K Expert만 |
+| 연산량(FLOPs) | 높음 | 낮음 |
+| 효율성 | 낮음 | 높음 |
 
 </details>
 
 **Sparse MoE 공식:**
 
 $$\hat{y} = \sum\_{i \in \text{TopK}} G(x)\_i \cdot E\_i(x)$$
-
-![Sparse MoE](/assets/img/cme295-lecture-3/image-20260113-073840.png)
 
 ### 4. Expert의 위치: FFN
 
@@ -120,8 +132,6 @@ $$\hat{y} = \sum\_{i \in \text{TopK}} G(x)\_i \cdot E\_i(x)$$
 **해결책: Load Balancing Loss**
 
 $$L\_{aux} = \alpha \cdot n \cdot \sum\_{i=1}^{n} f\_i \cdot P\_i$$
-
-![Load Balancing Loss](/assets/img/cme295-lecture-3/image-20260113-073929.png)
 
 * $f\_i$: Expert i로 라우팅된 토큰 비율
 * $P\_i$: Expert i의 평균 라우팅 확률
@@ -161,8 +171,6 @@ K개의 가장 유망한 경로 유지
 
 $$\log P(\text{sequence}) = \sum\_{t} \log P(w\_t | w\_1, ..., w\_{t-1})$$
 
-![Beam Search](/assets/img/cme295-lecture-3/image-20260113-074036.png)
-
 **사용 사례:** 기계 번역처럼 정확성이 중요한 경우
 
 ### 4. Sampling 방법 (가장 많이 사용)
@@ -179,8 +187,6 @@ $$\log P(\text{sequence}) = \sum\_{t} \log P(w\_t | w\_1, ..., w\_{t-1})$$
 
 $$P(w\_i) = \frac{\exp(x\_i / T)}{\sum\_j \exp(x\_j / T)}$$
 
-![Temperature](/assets/img/cme295-lecture-3/image-20260113-074048.png)
-
 | Temperature | 분포 형태 | 출력 특성 |
 | --- | --- | --- |
 | **T → 0** | Spiky (뾰족) | 가장 높은 확률 토큰만 선택, 결정론적 |
@@ -193,19 +199,120 @@ $T \to 0$ 일 때, $k$가 최대 logit의 인덱스라면:
 
 $$P(w\_k) = \frac{1}{1 + \sum\_{j \neq k} \exp((x\_j - x\_k)/T)} \to 1$$
 
-![Temperature proof](/assets/img/cme295-lecture-3/image-20260113-074108.png)
-
 <details>
 <summary>logit이란?</summary>
 
-![logit 설명](/assets/img/cme295-lecture-3/image-20260114-004142.png)
+**Logit이란?**
+
+Logit은 신경망의 마지막 층에서 **softmax를 적용하기 전의 원시(raw) 출력값**입니다.
+
+**LLM에서의 흐름:**
+
+```
+입력 텍스트 → Decoder 층들 → 마지막 Linear 층 → [logits] → Softmax → [확률 분포]
+```
+
+**예시:**
+
+```
+입력: "A cute teddy bear is"
+
+Logits (원시 점수):        Softmax 적용 후 (확률):
+
+| "fluffy"   |  3.2 |     | "fluffy"   | 0.15  |
+| "sleeping" |  2.8 | →   | "sleeping" | 0.10  |
+| "cute"     |  2.5 |     | "cute"     | 0.08  |
+| "airplane" | -1.0 |     | "airplane" | 0.001 |
+| ...        |  ... |     | ...        | ...   |
+
+     (합 ≠ 1)                  (합 = 1)
+```
+
+**핵심 특징:**
+
+| Logit | 확률 (Softmax 후) |
+| --- | --- |
+| 범위 제한 없음 (-∞ ~ +∞) | 0~1 사이 |
+| 합이 1이 아님 | 합이 정확히 1 |
+| 상대적 점수 | 실제 확률 |
+
+**Temperature**는 바로 이 logit을 softmax에 넣기 전에 나눠주는 값입니다:
+
+$$P(w_i) = \frac{\exp(x_i / T)}{\sum_j \exp(x_j / T)}$$
+
+여기서 $x_i$가 logit입니다.
 
 </details>
 
 <details>
 <summary>Temperature 증명 상세</summary>
 
-![Temperature 증명](/assets/img/cme295-lecture-3/image-20260114-004721.png)
+#### Temperature 수학적 증명 설명
+
+**1. 왜 $x_j - x_k < 0$ 인가?**
+
+핵심은 $k$의 정의에 있습니다.
+
+> "$k$가 최대 logit의 인덱스"
+
+즉, $x_k$는 모든 logit 중에서 가장 큰 값입니다.
+
+예시:
+
+```
+logits = [2.0, 5.0, 1.0, 3.0]
+                ↑
+           x_k = 5.0 (최댓값, k=1)
+```
+
+따라서 $j \neq k$인 다른 모든 logit은 $x_k$보다 작습니다:
+
+- $x_0 - x_k = 2.0 - 5.0 = -3.0 < 0$
+- $x_2 - x_k = 1.0 - 5.0 = -4.0 < 0$
+- $x_3 - x_k = 3.0 - 5.0 = -2.0 < 0$
+
+최댓값에서 빼니까 항상 음수가 됩니다.
+
+---
+
+**2. 왜 $P(w_k) \to 1$ 인가?**
+
+수식을 다시 보면:
+
+$$P(w_k) = \frac{1}{1 + \sum_{j \neq k} \exp\left(\frac{x_j - x_k}{T}\right)}$$
+
+단계별로 따라가 봅시다:
+
+| 단계 | 내용 |
+| --- | --- |
+| ① | $x_j - x_k < 0$ (음수) |
+| ② | $T \to 0^+$ (0에 가까운 양수) |
+| ③ | $\frac{\text{음수}}{\text{매우 작은 양수}} = -\infty$ |
+| ④ | $\exp(-\infty) = 0$ |
+
+**예시로 계산:**
+
+```
+x_j - x_k = -3.0 이라면:
+
+T = 1.0  →  (-3)/1 = -3      →  exp(-3) ≈ 0.05
+T = 0.1  →  (-3)/0.1 = -30   →  exp(-30) ≈ 0.000000000001
+T = 0.01 →  (-3)/0.01 = -300 → exp(-300) ≈ 0
+```
+
+**결론:**
+
+$$\sum_{j \neq k} \exp\left(\frac{x_j - x_k}{T}\right) \to 0$$
+
+따라서:
+
+$$P(w_k) = \frac{1}{1 + 0} = 1$$
+
+---
+
+**직관적 해석**
+
+Temperature가 0에 가까워지면, softmax가 "winner-take-all" 방식이 됩니다. 가장 높은 logit을 가진 토큰이 확률 1을 독차지하고, 나머지는 모두 0이 됩니다. 그래서 **결정론적(deterministic)**이라고 하는 것입니다.
 
 </details>
 
@@ -374,8 +481,6 @@ Decoder Output → Head 1 (Main) → 다음 토큰 1
 ### Temperature
 
 $$P(w\_i) = \frac{\exp(x\_i / T)}{\sum\_j \exp(x\_j / T)}$$
-
-![Temperature 요약](/assets/img/cme295-lecture-3/image-20260113-074151.png)
 
 ### 추론 최적화
 
