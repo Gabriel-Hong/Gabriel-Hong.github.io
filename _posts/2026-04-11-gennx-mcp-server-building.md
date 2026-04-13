@@ -571,9 +571,9 @@ server.add_tool(tool)
 
 | | Atlassian MCP (일반적 패턴) | GEN NX ToolFactory |
 |---|---|---|
-| 파라미터 구조 | flat 스칼라 (`string`, `number`, `enum`) | 중첩 dict (`ID → {X, Y, Z, ...}`) |
-| `inputSchema` 정의 | JS: 직접 JSON / Python: `Annotated`/`Field` | 원본 JSON Schema → `tool.parameters` 오버라이드 |
-| tool 수 | ~40개 (수동 정의) | ~152개 (JSON Schema에서 동적 생성) |
+| 파라미터 구조 | flat 스칼라 (`string`, `number`, `enum`) | 중첩 dict (`ID → {X, Y, Z, ...}`) — 엔드포인트마다 내부 필드가 다름 |
+| `inputSchema` 정의 | JS: 직접 JSON / Python: `Annotated`/`Field` | 원본 JSON Schema → `tool.parameters` 오버라이드. 내부 필드 구조를 `additionalProperties.properties`로 표현 |
+| tool 수 | ~40개 (수동 정의 가능한 규모) | ~152개 (수동 정의 비현실적 → JSON Schema에서 동적 생성) |
 | `ToolAnnotations` | 미사용 | method별 자동 부여 (readOnly, destructive, idempotent) |
 | 확장 방법 | 코드에 tool 정의 추가 | JSON 파일 추가 + ENDPOINTS dict 한 줄 |
 
@@ -684,6 +684,7 @@ READ_ONLY=true                    # write 태그 전부 OFF
 
 - 나머지 GEN NX API 커버 (해석 결과 조회, 설계 검토 등)
 - instructions 고도화 — tool 간 의존관계, 도메인 용어 사전, 자주 발생하는 오류 패턴 등을 보강하여 LLM의 tool 사용 정확도를 높이는 방향
+- tool description을 JSON 스키마 파일로 통합 — 현재 `descriptions.py`에 하드코딩된 description을 각 JSON 스키마 파일의 `feature_description` 필드로 옮겨서, 스키마와 description이 한 파일에서 관리되도록 개선
 - `listChanged` 기반 동적 tool 로딩 — 초기에는 project tools만 노출하고, 필요 시 도메인별 toolset을 런타임에 활성화
 
 ---
