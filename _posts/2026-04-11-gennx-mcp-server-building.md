@@ -88,7 +88,15 @@ claude mcp add gennx \
 
 ### 2.3 사용 예시
 
-등록 후 자연어로 요청하면 MCP 서버를 통해 GEN NX가 제어됩니다.
+등록 후 자연어로 요청하면 MCP 서버를 통해 GEN NX가 제어됩니다. 아래는 실제로 Claude Code에서 재료(material)를 복사하는 과정입니다.
+
+![Claude Code에서 MCP tool 호출](/assets/img/gennx-mcp-server/mcp-demo-conversation.png)
+_Claude Code가 `get_db_matl`로 기존 재료를 조회한 뒤, `post_db_matl`로 복사본을 생성하는 모습_
+
+![GEN NX에서 생성된 재료 확인](/assets/img/gennx-mcp-server/mcp-demo-gennx.png)
+_GEN NX의 Material Properties 창에서 복사된 재료(C24_Copy, Prestress_Copy)가 실제로 추가된 것을 확인_
+
+다른 예시로, 구조 모델을 처음부터 만드는 흐름은 다음과 같습니다.
 
 ```
 사용자: 3경간 연속보를 만들어줘. 경간 길이는 5m씩.
