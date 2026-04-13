@@ -4,6 +4,7 @@ title: 270개 API를 가진 구조해석 SW를 LLM에 연결하기 - GEN NX MCP 
 date: 2026-04-11 12:00:00 +0900
 categories: [AI, Tool]
 tags: [mcp, llm, python, fastmcp, structural-engineering, httpx]
+pin: true
 ---
 
 MIDASIT의 구조해석 소프트웨어 **GEN NX**를 MCP(Model Context Protocol) 서버로 감싸서 LLM의 도구로 노출하는 방법을 다룹니다.
