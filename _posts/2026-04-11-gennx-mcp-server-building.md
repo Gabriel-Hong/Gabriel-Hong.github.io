@@ -125,21 +125,7 @@ AI: [post_db_cons 호출]  → 절점 1, 4에 핀 지점 적용
 
 구조공학의 도메인 경계를 따라 5개의 sub-server로 분할했습니다.
 
-```
-Claude / GPT / Cursor / Windsurf
-    │  MCP Protocol (stdio)
-    ▼
-Main FastMCP ("gennx")
-    ├── modeling    (9 endpoints  · 절점·요소·재료·단면·두께 …)
-    ├── boundary    (8 endpoints  · 지점·스프링·강체링크 …)
-    ├── loads       (14 endpoints · 하중케이스·절점하중·하중조합 LCOM 6종 …)
-    ├── analysis    (6 endpoints  · 고유치·좌굴·P-Delta·비선형 …)
-    └── project     (9 endpoints  · 파일 open/save, 해석 실행, 뷰 캡처 …)
-              │
-         GennxApiClient (httpx async)
-              │
-         GEN NX REST API
-```
+![전체 아키텍처](/assets/img/gennx-mcp-server/overall-architecture.png)
 
 각 sub-server는 독립된 `FastMCP` 인스턴스이고, `main.mount()`로 메인 서버에 결합됩니다.
 
@@ -336,6 +322,8 @@ LLM은 사전에 전체 계획을 세워놓고 순서대로 실행하는 것이 
 ## 5. 구현 원리
 
 65개의 JSON 스키마 파일이 런타임에 46개의 엔드포인트로 인덱싱되고, 각 엔드포인트의 HTTP method마다 독립된 MCP tool이 생성되어 최대 **159개의 tool**이 노출됩니다. 별도의 코드 생성(codegen) 단계 없이, JSON 파일만 추가/수정하고 서버를 재기동하면 끝입니다.
+
+![동적 Tool 생성 파이프라인](/assets/img/gennx-mcp-server/dynamic-tool-pipeline.png)
 
 ### 5.1 Schema Registry — 스키마 로드와 병합
 
