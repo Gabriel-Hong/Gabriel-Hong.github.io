@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[논문 리뷰] REFRAG: Rethinking RAG based Decoding"
+title: "REFRAG: Rethinking RAG based Decoding"
 date: 2026-03-08 17:00:00 +0900
 categories: [AI, Paper]
 tags: [rag, refrag, chunk-embedding, selective-compression]

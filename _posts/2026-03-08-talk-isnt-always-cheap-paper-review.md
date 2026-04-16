@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[논문 리뷰] Talk Isn't Always Cheap: Understanding Failure Modes in Multi-Agent Debate"
+title: "Talk Isn't Always Cheap: Understanding Failure Modes in Multi-Agent Debate"
 date: 2026-03-08 15:00:00 +0900
 categories: [AI, Paper]
 tags: [multiagent, debate, sycophancy, failure-mode, rlhf]

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[논문 리뷰] Improving Factuality and Reasoning in Language Models through Multiagent Debate"
+title: "Improving Factuality and Reasoning in Language Models through Multiagent Debate"
 date: 2026-03-08 13:00:00 +0900
 categories: [AI, Paper]
 tags: [multiagent, reasoning, factuality, debate]

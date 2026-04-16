@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[논문 리뷰] Gated Attention for Large Language Models: Non-linearity, Sparsity, and Attention-Sink-Free"
+title: "Gated Attention for Large Language Models: Non-linearity, Sparsity, and Attention-Sink-Free"
 date: 2026-03-08 17:30:00 +0900
 categories: [AI, Paper]
 tags: [attention, gating, attention-sink, transformer, neurips]

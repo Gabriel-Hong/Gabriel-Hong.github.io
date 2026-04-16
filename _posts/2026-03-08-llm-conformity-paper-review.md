@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[논문 리뷰] Do As We Do, Not As You Think: The Conformity of Large Language Models"
+title: "Do As We Do, Not As You Think: The Conformity of Large Language Models"
 date: 2026-03-08 16:00:00 +0900
 categories: [AI, Paper]
 tags: [multiagent, conformity, benchform, group-pressure]
