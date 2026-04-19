@@ -430,11 +430,11 @@ annotations=ToolAnnotations(
 
 `_build_assign_schema()`는 원본 JSON Schema를 LLM이 이해하기 쉬운 parameter schema로 변환합니다. 엔드포인트의 스키마 구조에 따라 5가지로 분기합니다:
 
-1. 엔드포인트명과 일치하는 단일 최상위 키 (NODE, ELEM 등) → `additionalProperties`로 평탄화
-2. 다중 sub-type 키 (SECT, THIK) → sub-type 목록을 description에 명시
-3. `$schema` 포함 — `doc/*` API의 `Argument` 패턴 → 그대로 사용
-4. 엔드포인트명과 불일치하는 단일 키 → 1번과 유사하게 처리
-5. 최종 폴백 — 빈 object schema 반환
+1. **엔드포인트명과 일치하는 단일 최상위 키** — NODE, ELEM, MATL 등 대부분의 db/* API. `additionalProperties`로 ID-keyed dict 구조를 평탄화합니다. SECT(17개)·THIK(4개)도 sub-type 파일들이 모두 동일한 최상위 키(`"SECT"`/`"THIK"`)를 사용하므로 registry에서 병합된 뒤 이 분기로 합류합니다.
+2. **다중 최상위 키** — `$schema` + `Argument`를 함께 가진 `db/STOR` 같은 경우. sub-type 목록을 description에 텍스트로 명시합니다.
+3. **`$schema`가 최상위** — `doc/*` API의 `Argument` 패턴. 이미 표준 JSON Schema 형태이므로 그대로 passthrough합니다. 다만 `doc/*` 7개는 `project.py`에서 데코레이터로 수동 등록되므로, 현재 이 분기는 실질적으로 안전망 역할입니다.
+4. **엔드포인트명과 불일치하는 단일 키** — `db/LCOM` 엔드포인트 아래 `"LCOM-GEN"`, `"LCOM-CONC"` 등 6개 sub-type이 여기에 해당합니다. 1번과 동일한 평탄화를 적용합니다.
+5. **최종 폴백** — 빈 object schema 반환. 현재 65개 스키마 중 이 분기로 빠지는 것은 없고, 스키마 작성 오류에 대비한 안전망입니다.
 
 가장 효과가 큰 부분은 **예제 payload를 description에 JSON으로 주입**하는 것입니다.
 
@@ -444,7 +444,7 @@ if example:
     desc += f" Example: {json.dumps(example, ensure_ascii=False)}"
 ```
 
-JSON Schema만 제공하면 LLM이 필드 구조는 파악하지만 실제 값을 채울 때 자주 틀립니다. 예제 한 줄을 description에 붙이는 것만으로 올바른 payload 생성 비율이 크게 올라갑니다.
+JSON Schema만 제공하면 LLM이 필드 구조는 파악하지만 실제 값을 채울 때 자주 틀립니다. 특히 `{"1": {...}, "2": {...}}` 같은 ID-keyed dict의 **키 관례**(정수 문자열)는 `additionalProperties`만으로는 표현이 안 됩니다. 예제 한 줄을 description에 붙이는 것만으로 올바른 payload 생성 비율이 크게 올라갑니다. 현재 구현은 분기 1·2에만 예제 주입 로직이 들어있고, LCOM 계열(분기 4)에는 누락되어 있어 보강 여지가 있습니다.
 
 ### 5.4 tool 등록 — 일반적인 MCP 패턴과 다른 점
 
