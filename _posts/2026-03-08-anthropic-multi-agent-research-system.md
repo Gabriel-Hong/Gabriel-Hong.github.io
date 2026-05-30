@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[논문 리뷰] How we built our multi-agent research system"
+title: "How we built our multi-agent research system"
 date: 2026-03-08 14:00:00 +0900
 categories: [AI, Paper]
 tags: [multiagent, orchestrator-worker, claude, anthropic]
