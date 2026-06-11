@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Do Transformers Need Three Projections? — QKV 투영을 공유해 KV 캐시를 절반으로"
-date: 2026-06-11 14:00:00 +0900
+date: 2026-06-11 09:00:00 +0900
 categories: [AI, Paper]
 tags: [transformer, attention, kv-cache, weight-tying, efficient-inference, gqa-mqa, edge-deployment]
 math: true
