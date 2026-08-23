@@ -2,7 +2,7 @@
 layout: post
 title: "Stanford CME295: Lecture 5 - LLM Tuning (Preference Tuning)"
 date: 2026-03-08 10:50:00 +0900
-categories: [AI, Lecture]
+categories: [AI, Lecture, Stanford CME295]
 tags: [stanford-cme295, llm, rlhf, dpo, ppo, preference-tuning, reward-model, alignment]
 math: true
 ---

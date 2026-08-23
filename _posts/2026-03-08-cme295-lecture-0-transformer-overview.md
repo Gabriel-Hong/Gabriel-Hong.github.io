@@ -2,7 +2,7 @@
 layout: post
 title: "Stanford CME295: Lecture 0 - Transformer 개요"
 date: 2026-03-08 10:00:00 +0900
-categories: [AI, Lecture]
+categories: [AI, Lecture, Stanford CME295]
 tags: [stanford-cme295, transformer, attention, nlp, self-attention, multi-head-attention]
 math: true
 ---

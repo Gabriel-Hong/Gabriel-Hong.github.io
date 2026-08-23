@@ -2,7 +2,7 @@
 layout: post
 title: "Stanford CME295: Lecture 2 - Transformer-Based Models & Tricks"
 date: 2026-03-08 10:20:00 +0900
-categories: [AI, Lecture]
+categories: [AI, Lecture, Stanford CME295]
 tags: [stanford-cme295, transformer, rope, rmsnorm, gqa, bert, distilbert, roberta]
 math: true
 ---

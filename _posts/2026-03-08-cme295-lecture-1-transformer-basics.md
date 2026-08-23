@@ -2,7 +2,7 @@
 layout: post
 title: "Stanford CME295: Lecture 1 - Transformer 기초"
 date: 2026-03-08 10:10:00 +0900
-categories: [AI, Lecture]
+categories: [AI, Lecture, Stanford CME295]
 tags: [stanford-cme295, transformer, attention, nlp, word2vec, rnn, self-attention]
 math: true
 ---

@@ -103,14 +103,46 @@ layout: page
         <div id="{{ LIST_PREFIX }}{{ group_index }}" class="collapse show" aria-expanded="true">
           <ul class="list-group">
             {% for sub_category in sub_categories %}
+              <!-- third-level categories nested under this sub-category -->
+              {% assign leaf_categories = '' | split: '' %}
+              {% for post in posts_of_category %}
+                {% if post.categories[1] == sub_category %}
+                  {% assign leaf_category = post.categories[2] %}
+                  {% if leaf_category %}
+                    {% unless leaf_categories contains leaf_category %}
+                      {% assign leaf_categories = leaf_categories | push: leaf_category %}
+                    {% endunless %}
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+
+              {% assign leaf_categories = leaf_categories | sort %}
+              {% assign leaf_categories_size = leaf_categories | size %}
+
               <li class="list-group-item">
-                <i class="far fa-folder fa-fw"></i>
+                <i class="far fa-folder{% if leaf_categories_size > 0 %}-open{% endif %} fa-fw"></i>
 
                 {% capture _sub_ctg_url %}/categories/{{ sub_category | slugify | url_encode }}/{% endcapture %}
                 <a href="{{ _sub_ctg_url | relative_url }}" class="mx-2">{{ sub_category }}</a>
 
                 {% assign posts_size = site.categories[sub_category] | size %}
                 <span class="text-muted small font-weight-light">
+                  {% if leaf_categories_size > 0 %}
+                    {{ leaf_categories_size }}
+                    {% if leaf_categories_size > 1 %}
+                      {{
+                        site.data.locales[lang].categories.category_measure.plural
+                        | default: site.data.locales[lang].categories.category_measure
+                      }}
+                    {% else %}
+                      {{
+                        site.data.locales[lang].categories.category_measure.singular
+                        | default: site.data.locales[lang].categories.category_measure
+                      }}
+                    {% endif -%}
+                    ,
+                  {% endif %}
+
                   {{ posts_size }}
 
                   {% if posts_size > 1 %}
@@ -125,6 +157,36 @@ layout: page
                     }}
                   {% endif %}
                 </span>
+
+                {% if leaf_categories_size > 0 %}
+                  <ul class="list-group list-group-flush mt-2 mb-0">
+                    {% for leaf_category in leaf_categories %}
+                      <li class="list-group-item border-0 py-1 ps-3 bg-transparent">
+                        <i class="far fa-folder fa-fw"></i>
+
+                        {% capture _leaf_ctg_url %}/categories/{{ leaf_category | slugify | url_encode }}/{% endcapture %}
+                        <a href="{{ _leaf_ctg_url | relative_url }}" class="mx-2">{{ leaf_category }}</a>
+
+                        {% assign leaf_posts_size = site.categories[leaf_category] | size %}
+                        <span class="text-muted small font-weight-light">
+                          {{ leaf_posts_size }}
+
+                          {% if leaf_posts_size > 1 %}
+                            {{
+                              site.data.locales[lang].categories.post_measure.plural
+                              | default: site.data.locales[lang].categories.post_measure
+                            }}
+                          {% else %}
+                            {{
+                              site.data.locales[lang].categories.post_measure.singular
+                              | default: site.data.locales[lang].categories.post_measure
+                            }}
+                          {% endif %}
+                        </span>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
               </li>
             {% endfor %}
           </ul>

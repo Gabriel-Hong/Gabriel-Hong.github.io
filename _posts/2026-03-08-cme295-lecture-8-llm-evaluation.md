@@ -2,7 +2,7 @@
 layout: post
 title: "Stanford CME295: Lecture 8 - LLM Evaluation"
 date: 2026-03-08 11:20:00 +0900
-categories: [AI, Lecture]
+categories: [AI, Lecture, Stanford CME295]
 tags: [stanford-cme295, llm, evaluation, benchmark, llm-as-a-judge, bleu, rouge, meteor, cohen-kappa]
 math: true
 ---

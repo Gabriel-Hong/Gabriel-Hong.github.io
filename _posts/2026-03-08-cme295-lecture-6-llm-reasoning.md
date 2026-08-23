@@ -2,7 +2,7 @@
 layout: post
 title: "Stanford CME295: Lecture 6 - LLM Reasoning"
 date: 2026-03-08 11:00:00 +0900
-categories: [AI, Lecture]
+categories: [AI, Lecture, Stanford CME295]
 tags: [stanford-cme295, llm, reasoning, grpo, deepseek-r1, chain-of-thought, rl, pass-at-k]
 math: true
 ---

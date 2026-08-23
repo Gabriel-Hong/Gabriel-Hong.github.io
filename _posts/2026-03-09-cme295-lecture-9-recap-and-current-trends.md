@@ -2,7 +2,7 @@
 layout: post
 title: "Stanford CME295: Lecture 9 - Recap & Current Trends"
 date: 2026-03-09 10:00:00 +0900
-categories: [AI, Lecture]
+categories: [AI, Lecture, Stanford CME295]
 tags: [stanford-cme295, llm, transformer, vision-transformer, diffusion-llm, recap, vit, vlm]
 math: true
 ---

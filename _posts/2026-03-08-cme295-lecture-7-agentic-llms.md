@@ -2,7 +2,7 @@
 layout: post
 title: "Stanford CME295: Lecture 7 - Agentic LLMs (RAG, Tool Calling, Agents)"
 date: 2026-03-08 11:10:00 +0900
-categories: [AI, Lecture]
+categories: [AI, Lecture, Stanford CME295]
 tags: [stanford-cme295, llm, rag, tool-calling, agent, react, mcp, retrieval]
 math: true
 ---

@@ -2,7 +2,7 @@
 layout: post
 title: "Stanford CME295: Lecture 4 - LLM Training"
 date: 2026-03-08 10:40:00 +0900
-categories: [AI, Lecture]
+categories: [AI, Lecture, Stanford CME295]
 tags: [stanford-cme295, llm, training, pre-training, fine-tuning, lora, flash-attention, distributed-training]
 math: true
 ---
